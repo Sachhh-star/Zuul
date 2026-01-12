@@ -109,6 +109,9 @@ class Game
 			case "look":
 				PrintLook();
 				break;
+			case "status":
+				PrintStatus();
+				break;
 			case "quit":
 				wantToQuit = true;
 				break;
@@ -139,6 +142,11 @@ class Game
 		// items
 	}
 
+	private void PrintStatus()
+	{
+		Console.WriteLine("Your health is: " + player.GetHealth());
+	}
+
 	// Try to go to one direction. If there is an exit, enter the new
 	// room, otherwise print an error message.
 	private void GoRoom(Command command)
@@ -161,6 +169,14 @@ class Game
 		}
 
 		player.CurrentRoom = nextRoom;
+		player.Damage(10);
+		Console.WriteLine("You tripped and lost 10 health");
+		Console.WriteLine("Your health: " + player.GetHealth());
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
+
+		if (player.IsAlive()== false)
+		{
+			Console.WriteLine("You are died!");
+		}
 	}
 }
