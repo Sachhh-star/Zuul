@@ -13,6 +13,11 @@ class CommandLibrary
 		validCommands.Add("help");
 		validCommands.Add("go");
 		validCommands.Add("look");
+		validCommands.Add("status");
+		// validCommands.Add("put");
+		// validCommands.Add("get");
+		validCommands.Add("take");
+		validCommands.Add("drop");
 		validCommands.Add("quit");
 	}
 

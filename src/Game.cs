@@ -47,8 +47,16 @@ class Game
 		cellar.AddExit("down", office);
 
 		// Create your Items here
+		Item potion = new Item(5, "a green potion");
+		Item bag = new Item(1, "a black bag");
+		Item sword = new Item(5, "a sword");
+		Item key = new Item(1, "a rusty key!");
 		// ...
 		// And add them to the Rooms
+		kitchen.Chest.Put("potion", potion);
+		kitchen.Chest.Put("sword", sword);
+		kitchen.Chest.Put("bag", bag);
+		lab.Chest.Put("key", key);
 		// ...
 
 		// Start game outside
@@ -112,6 +120,12 @@ class Game
 			case "status":
 				PrintStatus();
 				break;
+			case "take":
+				Take(command);
+				break;
+			case "drop":
+				Drop(command);
+				break;
 			case "quit":
 				wantToQuit = true;
 				break;
@@ -134,6 +148,27 @@ class Game
 		// let the parser print the commands
 		parser.PrintValidCommands();
 	}
+	//  take and drop command!
+	private void Take(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Take what?");
+			return;
+		}
+		string itemName = command.SecondWord;
+		player.TakeFromChest(itemName);
+	}
+	private void Drop(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Drop what?");
+			return;
+		}
+		string itemName = command.SecondWord;
+		player.DropFromChest(itemName);
+	}
 
 	private void PrintLook()
 	{
@@ -145,6 +180,7 @@ class Game
 	private void PrintStatus()
 	{
 		Console.WriteLine("Your health is: " + player.GetHealth());
+		Console.WriteLine("Inventory: " + player.GetInventoryString());
 	}
 
 	// Try to go to one direction. If there is an exit, enter the new

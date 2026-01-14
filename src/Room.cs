@@ -5,13 +5,20 @@ class Room
 	// Private fields
 	private string description;
 	private Dictionary<string, Room> exits; // stores exits of this room.
-
+	private Inventory chest;
+	// property
+	public Inventory Chest
+	{
+		get { return chest;}
+	}
 	// Create a room described "description". Initially, it has no exits.
 	// "description" is something like "in a kitchen" or "in a court yard".
 	public Room(string desc)
 	{
 		description = desc;
 		exits = new Dictionary<string, Room>();
+		// het kan veel items bevatten
+		chest = new Inventory(999999);
 	}
 
 	// Define an exit for this room.
