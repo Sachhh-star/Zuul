@@ -18,6 +18,8 @@ class CommandLibrary
 		// validCommands.Add("get");
 		validCommands.Add("take");
 		validCommands.Add("drop");
+		validCommands.Add("use");
+		validCommands.Add("attack");
 		validCommands.Add("quit");
 	}
 

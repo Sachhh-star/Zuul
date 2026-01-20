@@ -16,7 +16,7 @@ class Inventory
         }
         // this is when you get the item for your inventory??? 
         items.Add(itemName,item);
-        return false;
+        return true;
     }
     public Item Get(string itemName)
     {

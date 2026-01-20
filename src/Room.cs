@@ -42,6 +42,10 @@ class Room
 		str += description;
 		str += ".\n";
 		str += GetExitString();
+
+		// with this code, you can see all items in the room!
+		str += ".\n";
+		str += chest.Show();
 		return str;
 	}
 

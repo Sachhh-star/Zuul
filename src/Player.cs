@@ -1,7 +1,9 @@
+using System.Reflection.Metadata;
+
 class Player
 {
     public Room CurrentRoom { get; set; }
-    
+
     private int health;
     private Inventory backpack;
     public Player()
@@ -16,7 +18,7 @@ class Player
     }
     public void Health(int amount)
     {
-        health = health + amount;
+        health = Math.Min(health + amount,100);
     }
 
     public bool IsAlive()
@@ -57,5 +59,33 @@ class Player
     public string GetInventoryString()
     {
         return backpack.Show();
+    }
+
+    //use method 
+    
+    public string Use(string itemName)
+    {
+        Item item = backpack.Get(itemName); //you can check of the player have this item in the backpack
+        if (item == null) // you can try to take and use it 
+        {
+            return "You don't have this item!"; 
+        } 
+        String massages = "";
+
+        switch (itemName.ToLower())
+        {
+            case "potion":
+            Health(20);
+            massages = "You have drink the potion! And your heal is now " + health;
+            break;
+        }
+        backpack.Put(itemName, item);
+        // if (itemName == "potion")
+        // {
+        //     Health(20); // it give you 20 heal
+        //     backpack.Get(itemName); // this means that when you use the item it will remove permenently
+        //     return "You has use potion";
+        // }
+        return massages;
     }
 }

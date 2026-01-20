@@ -47,7 +47,7 @@ class Game
 		cellar.AddExit("down", office);
 
 		// Create your Items here
-		Item potion = new Item(5, "a green potion");
+		Item potion = new Item(5, "healing potion");
 		Item bag = new Item(1, "a black bag");
 		Item sword = new Item(5, "a sword");
 		Item key = new Item(1, "a rusty key!");
@@ -74,6 +74,11 @@ class Game
 		bool finished = false;
 		while (!finished)
 		{
+			if (!player.IsAlive())
+			{
+				Console.WriteLine("Try again!");
+				return;
+			}
 			Command command = parser.GetCommand();
 			finished = ProcessCommand(command);
 		}
@@ -100,7 +105,7 @@ class Game
 	{
 		bool wantToQuit = false;
 
-		if(command.IsUnknown())
+		if (command.IsUnknown())
 		{
 			Console.WriteLine("I don't know what you mean...");
 			return wantToQuit; // false
@@ -126,6 +131,9 @@ class Game
 			case "drop":
 				Drop(command);
 				break;
+			case "use":
+				Use(command);
+				break;
 			case "quit":
 				wantToQuit = true;
 				break;
@@ -137,7 +145,7 @@ class Game
 	// ######################################
 	// implementations of user commands:
 	// ######################################
-	
+
 	// Print out some help information.
 	// Here we print the mission and a list of the command words.
 	private void PrintHelp()
@@ -170,6 +178,72 @@ class Game
 		player.DropFromChest(itemName);
 	}
 
+	//Use 
+	private void Use(Command command)
+	{
+		// if (!command.HasSecondWord())
+		// {
+		// 	Console.WriteLine("Use what?!");
+		// 	return;
+		// }
+		
+
+		// if (command.HasThridWord())
+		// {
+		// 	string direction = command.ThridWord;
+		// 	//this is if the player in the lab? are they use the key? to the east ?
+		// 	if (player.CurrentRoom.GetShortDescription().Contains("computing lab") && itemName == "key" && direction == "east")
+		// 	{
+		// 		Console.WriteLine("You put the key in the east door and turn it...");
+        //         Console.WriteLine("CLICK! The door is unlocked.");
+                
+        //         // this can move the player manually to the office
+        //         Room nextRoom = player.CurrentRoom.GetExit("east");
+        //         player.CurrentRoom = nextRoom;
+        //         Console.WriteLine(player.CurrentRoom.GetLongDescription());
+        //         return;
+		// 	}
+		// }
+		// string itemName = command.SecondWord;
+		// Console.WriteLine(player.Use(itemName));
+		
+		// if (!command.HasThridWord())
+		// {
+		// 	Console.WriteLine("Use what?!");
+		// 	return;
+		// }
+
+		//the player has call Use method and print the result
+		if (!command.HasSecondWord())
+		{
+			// if there is no second word, we don't know where to go...
+			Console.WriteLine("Go where?");
+			return;
+		}if (!command.HasThridWord())
+		{
+			// if there is no second word, we don't know where to go...
+			Console.WriteLine("Go");
+			return;
+		}
+
+		string itemName = command.SecondWord;
+		string direction = command.ThridWord;
+		
+		Console.WriteLine( player.Use(itemName));
+		// if (command.HasSecondWord())
+		// {
+		// 	string direction = command.ThridWord;
+		// 	if (itemName == "" && direction == "")
+		// 	{
+		// 		Console.WriteLine("you unlock the north door");
+		// 		return;
+		// 	}
+		// }
+		
+		player.Use(itemName);
+		// this is not done!!!!
+	}
+
 	private void PrintLook()
 	{
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
@@ -183,11 +257,35 @@ class Game
 		Console.WriteLine("Inventory: " + player.GetInventoryString());
 	}
 
+	//attack command 
+	// private void Attack(Command command)
+	// {
+	// 	if (!command.HasSecondWord())
+	// 	{
+	// 		Console.WriteLine("Who are you attacking?");
+	// 		return;
+	// 	}
+
+	// 	string target = command.SecondWord;
+	// 	if (!command.HasThridWord())
+	// 	{
+	// 		Console.WriteLine("Attack with what?");
+	// 		return;
+	// 	}
+	// 	string sword = command.ThridWord; 
+	// 	Item swordItem = player.GetInventoryString(sword);
+	// 	if (swordItem == null)
+	// 	{
+	// 		Console.WriteLine("You don't have a " + sword);
+	// 		return;
+	// 	}
+	// }
+
 	// Try to go to one direction. If there is an exit, enter the new
 	// room, otherwise print an error message.
 	private void GoRoom(Command command)
 	{
-		if(!command.HasSecondWord())
+		if (!command.HasSecondWord())
 		{
 			// if there is no second word, we don't know where to go...
 			Console.WriteLine("Go where?");
@@ -200,7 +298,7 @@ class Game
 		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
-			Console.WriteLine("There is no door to "+direction+"!");
+			Console.WriteLine("There is no door to " + direction + "!");
 			return;
 		}
 
@@ -210,9 +308,18 @@ class Game
 		Console.WriteLine("Your health: " + player.GetHealth());
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 
-		if (player.IsAlive()== false)
+		if (player.CurrentRoom.GetShortDescription() == "outside the main entrance of the university")
 		{
-			Console.WriteLine("You are died!");
+			Console.WriteLine("Congratulation! YOu have escaped the boring university!");
+			Console.WriteLine("You WIN!!");
+
+			//game is stop!
+			Environment.Exit(0);
 		}
+
+		// if (player.IsAlive()== false)
+		// {
+		// 	Console.WriteLine("You are died!");
+		// }
 	}
 }
