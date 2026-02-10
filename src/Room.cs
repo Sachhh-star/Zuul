@@ -6,6 +6,7 @@ class Room
 	private string description;
 	private Dictionary<string, Room> exits; // stores exits of this room.
 	private Inventory chest;
+	public Guard CurrentGuard {get; set;}
 	// property
 	public Inventory Chest
 	{
@@ -19,6 +20,12 @@ class Room
 		exits = new Dictionary<string, Room>();
 		// het kan veel items bevatten
 		chest = new Inventory(999999);
+		CurrentGuard = null;
+	}
+	//for a guard 
+	public bool HasAliveGuard()
+	{
+		return CurrentGuard != null && CurrentGuard.IsAlive();
 	}
 
 	// Define an exit for this room.

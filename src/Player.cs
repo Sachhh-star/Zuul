@@ -18,7 +18,7 @@ class Player
     }
     public void Health(int amount)
     {
-        health = Math.Min(health + amount,100);
+        health = Math.Min(health + amount, 100);
     }
 
     public bool IsAlive()
@@ -62,24 +62,34 @@ class Player
     }
 
     //use method 
-    
+
     public string Use(string itemName)
     {
         Item item = backpack.Get(itemName); //you can check of the player have this item in the backpack
         if (item == null) // you can try to take and use it 
         {
-            return "You don't have this item!"; 
-        } 
+            return "You don't have this item!";
+        }
         String massages = "";
 
         switch (itemName.ToLower())
         {
             case "potion":
-            Health(20);
-            massages = "You have drink the potion! And your heal is now " + health;
-            break;
+                Health(20);
+                massages = "You have drink the potion! And your heal is now " + health;
+                break;
+            case "sword":
+                Attack(10);
+                massages = "You have attack the guard! he health is: ";
+                backpack.Put(itemName, item);
+                break;
+
+            default:
+                massages = "You can't ise that!";
+                backpack.Put(itemName, item);
+                break;
         }
-        backpack.Put(itemName, item);
+
         // if (itemName == "potion")
         // {
         //     Health(20); // it give you 20 heal
@@ -87,5 +97,32 @@ class Player
         //     return "You has use potion";
         // }
         return massages;
+
+    }
+    public void Attack(int damage)
+    {
+        Guard enemy = CurrentRoom.CurrentGuard;
+        if (enemy == null)
+        {
+            Console.WriteLine("There is no one to be attack!");
+        }
+        enemy.TakeDamage(damage);
+        Console.WriteLine($"You hit the gaurd for {damage} damage!");
+        Console.WriteLine($"Gaurd HP: {enemy.HP}");
+        // if (!CurrentRoom.HasAliveGuard())
+        // {
+        //     this.Damage(10);
+        //     Console.WriteLine("The guard hits you back");
+        // }
+        if (CurrentRoom.HasAliveGuard())
+        {
+            // CurrentRoom.CurrentGuard.TakeDamage(damage); 
+            Damage(10);
+            Console.WriteLine("The guard hit your back!");
+        }
+        else
+        {
+            Console.WriteLine("You defeated the guard! The path is now clear!");
+        }
     }
 }
