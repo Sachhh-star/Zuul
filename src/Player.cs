@@ -39,9 +39,19 @@ class Player
             System.Console.WriteLine("Item not found in the room.");
             return false;
         }
-        backpack.Put(itemName, item);
-        System.Console.WriteLine("You took the: " + itemName);
-        return true;
+        if (backpack.Put(itemName, item))
+        {
+            Console.WriteLine("You took the:" + itemName);
+            return true;
+        }
+        else
+        {
+            CurrentRoom.Chest.Put(itemName, item);
+            return false;
+        }
+        // backpack.Put(itemName, item);
+        // System.Console.WriteLine("You took the: " + itemName);
+        // return true;
     }
 
     public bool DropFromChest(string itemName)
@@ -75,17 +85,42 @@ class Player
         switch (itemName.ToLower())
         {
             case "potion":
-                Health(20);
+                Health(25);
                 massages = "You have drink the potion! And your heal is now " + health;
                 break;
             case "sword":
-                Attack(10);
+                Attack(20);
                 massages = "You have attack the guard! he health is: ";
+                backpack.Put(itemName, item);
+                break;
+            case "axe":
+                Attack(25);
+                backpack.Put(itemName, item);
+                break;
+            case "key":
+                bool UnlockSomething = false;
+                foreach (Room neighbor in CurrentRoom.GetExits().Values)
+                {
+                    if (neighbor.IsLock())
+                    {
+                        neighbor.Unlock("key");
+                        UnlockSomething = true;
+                    }
+                }
+                if (UnlockSomething)
+                {
+                    massages = "You have unlock the door!";
+                }
+                else
+                {
+                    massages = "You need to use key to unlock the door!";
+
+                }
                 backpack.Put(itemName, item);
                 break;
 
             default:
-                massages = "You can't ise that!";
+                massages = "You can't is that!";
                 backpack.Put(itemName, item);
                 break;
         }
@@ -105,10 +140,11 @@ class Player
         if (enemy == null)
         {
             Console.WriteLine("There is no one to be attack!");
+            return;
         }
         enemy.TakeDamage(damage);
-        Console.WriteLine($"You hit the gaurd for {damage} damage!");
-        Console.WriteLine($"Gaurd HP: {enemy.HP}");
+        Console.WriteLine($"You hit the guard for {damage} damage!");
+        Console.WriteLine($"Guard HP: {enemy.HP}");
         // if (!CurrentRoom.HasAliveGuard())
         // {
         //     this.Damage(10);
@@ -118,11 +154,16 @@ class Player
         {
             // CurrentRoom.CurrentGuard.TakeDamage(damage); 
             Damage(10);
-            Console.WriteLine("The guard hit your back!");
+            Console.WriteLine("The guard hits you back!");
+            if (!IsAlive())
+            {
+                Console.WriteLine("The guard has hit you and you have died!");
+            }
         }
         else
         {
             Console.WriteLine("You defeated the guard! The path is now clear!");
         }
     }
+
 }

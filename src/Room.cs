@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 
 class Room
 {
@@ -6,6 +7,8 @@ class Room
 	private string description;
 	private Dictionary<string, Room> exits; // stores exits of this room.
 	private Inventory chest;
+	private bool RoomISLock;
+
 	public Guard CurrentGuard {get; set;}
 	// property
 	public Inventory Chest
@@ -21,6 +24,24 @@ class Room
 		// het kan veel items bevatten
 		chest = new Inventory(999999);
 		CurrentGuard = null;
+		RoomISLock = false;
+	}
+	// room is lock 
+	public bool IsLock()
+	{
+		return RoomISLock;
+	}
+	public void SetLock(string keyName)
+	{
+		RoomISLock = true;
+	}
+	public void Unlock(string itemName)
+	{
+		if (itemName == "key")
+		{
+			RoomISLock = false;
+			return;
+		}
 	}
 	//for a guard 
 	public bool HasAliveGuard()
@@ -75,5 +96,9 @@ class Room
 		str += String.Join(", ", exits.Keys);
 
 		return str;
+	}
+	public Dictionary<string, Room> GetExits()
+	{
+		return exits;
 	}
 }

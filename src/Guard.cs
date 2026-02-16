@@ -1,7 +1,7 @@
 class Guard
 {
     public int HP;
-    public Guard loot;
+    // public Guard loot;
     public Item Loot {get; set;}
 
     public Guard(int hp, Item loot = null)

@@ -14,6 +14,11 @@ class Inventory
         {
             return false; //if it too heavy maybe???
         }
+        if (items.ContainsKey(itemName))
+        {
+            Console.WriteLine($"You already have a {itemName}!");
+            return false;
+        }
         // this is when you get the item for your inventory??? 
         items.Add(itemName,item);
         return true;

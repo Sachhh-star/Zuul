@@ -40,8 +40,8 @@ class Game
 
 		pub.AddExit("east", outside);
 
-		lab.AddExit("north", outside);
-		lab.AddExit("east", office);
+		lab.AddExit("north", cellar);
+		lab.AddExit("east", theatre);
 
 		office.AddExit("west", lab);
 
@@ -55,20 +55,27 @@ class Game
 		Item bag = new Item(1, "a black bag");
 		Item sword = new Item(1, "a sword");
 		Item key = new Item(1, "a rusty key!");
-		Item goldenkey = new Item(1, "a golden key");
-		Item axe = new Item (1, "a Axe");
+		Item axe = new Item(1, "a Axe");
 		// ...
 		// And add them to the Rooms
 		kitchen.Chest.Put("potion", potion);
 		kitchen.Chest.Put("sword", sword);
 		kitchen.Chest.Put("bag", bag);
 		lab.Chest.Put("key", key);
-		outside.Chest.Put("goldenkey", goldenkey);
+		lab.Chest.Put("potion", potion);
+
+		classroom.Chest.Put("potion", potion);
+
+
+		office.Chest.Put("key", key);
 		office.Chest.Put("axe", axe);
 		// ...
 		// Add the guard 
 		cellar.CurrentGuard = new Guard(100);
+		hallways.CurrentGuard = new Guard(100);
 
+		// add lock room
+		lab.SetLock("key");
 
 		// Start game outside
 		// currentRoom = outside;
@@ -195,14 +202,14 @@ class Game
 	//Use 
 	private void Use(Command command)
 	{
-		
+
 		if (!command.HasSecondWord())
 		{
 			Console.WriteLine("Use what?!");
 			return;
 		}
 
-	
+
 
 		string itemName = command.SecondWord;
 		// string direction = command.ThridWord;
@@ -231,7 +238,7 @@ class Game
 			Console.WriteLine("Attack who?");
 			return;
 		}
-		if (command.SecondWord.ToLower() != "guard")
+		if (command.SecondWord.ToLower() != "guard" && command.SecondWord.ToLower() != "gaurd")
 		{
 			Console.WriteLine("You need to attack the guard!");
 			return;
@@ -241,6 +248,7 @@ class Game
 		if (currentRoom.CurrentGuard == null)
 		{
 			Console.WriteLine("There is no Guard here.");
+			return;
 		}
 		player.Attack(20);
 	}
@@ -254,12 +262,36 @@ class Game
 		}
 		if (player.CurrentRoom.CurrentGuard != null && player.CurrentRoom.CurrentGuard.IsAlive())
 		{
-			Console.WriteLine("A guard blocks your path! You much defeat him first");
+			Console.WriteLine("A guard blocks your path! You must defeat him first");
 			return;
 		}
 
 		string direction = command.SecondWord;
+		string itemName = command.ThridWord;
 
+		// use the key 
+		if (itemName == "key")
+		{
+			if (string.IsNullOrEmpty(direction))
+			{
+				Console.WriteLine("Which door do you want to unlock? (e.g. 'use key east')");
+			}
+			return;
+		}
+		Room targetRoom = player.CurrentRoom.GetExit(direction);
+		if (targetRoom == null)
+		{
+			Console.WriteLine("There is no door in that direction");
+		}
+		else
+		{
+			if (!string.IsNullOrEmpty(itemName))
+			{
+				targetRoom.Unlock(itemName);
+				Console.WriteLine($"Click! you unlock the door to the {direction}.");
+			}
+
+		}
 		// Try to go to the next room.
 		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
@@ -267,10 +299,15 @@ class Game
 			Console.WriteLine("There is no door to " + direction + "!");
 			return;
 		}
+		if (nextRoom.IsLock())
+		{
+			Console.WriteLine("The door is locked! You need to use the key!");
+			return;
+		}
 
 		player.CurrentRoom = nextRoom;
-		player.Damage(10);
-		Console.WriteLine("You tripped and lost 10 health");
+		player.Damage(5);
+		Console.WriteLine("You tripped and lost  health");
 		Console.WriteLine("Your health: " + player.GetHealth());
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 
