@@ -36,7 +36,7 @@ class Game
 		outside.AddExit("south", lab);
 		outside.AddExit("west", pub);
 
-		theatre.AddExit("west", outside);
+		theatre.AddExit("west", pub);
 
 		pub.AddExit("east", outside);
 
@@ -45,8 +45,8 @@ class Game
 
 		office.AddExit("west", lab);
 
-		kitchen.AddExit("up", cellar);
-		cellar.AddExit("down", office);
+		kitchen.AddExit("east", cellar);
+		cellar.AddExit("north", office);
 		classroom.AddExit("up", hallways);
 		hallways.AddExit("down", kitchen);
 
@@ -67,15 +67,17 @@ class Game
 		classroom.Chest.Put("potion", potion);
 
 
-		office.Chest.Put("key", key);
+
 		office.Chest.Put("axe", axe);
 		// ...
 		// Add the guard 
 		cellar.CurrentGuard = new Guard(100);
 		hallways.CurrentGuard = new Guard(100);
-
+		pub.CurrentGuard = new Guard(100);
 		// add lock room
 		lab.SetLock("key");
+		pub.SetLock("key");
+		theatre.SetLock("key");
 
 		// Start game outside
 		// currentRoom = outside;
@@ -222,8 +224,6 @@ class Game
 	private void PrintLook()
 	{
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
-
-		// items
 	}
 
 	private void PrintStatus()
@@ -243,6 +243,40 @@ class Game
 			Console.WriteLine("You need to attack the guard!");
 			return;
 		}
+
+		
+		int damage = 15; // Default damage (unarmed)
+		string weaponName = "";
+
+		// Check for "attack guard [weapon]" (Parser strips "with")
+		if (command.HasThridWord())
+		{
+			weaponName = command.ThridWord.ToLower();
+		}
+		
+		// If a weapon was specified, check if player has it and set damage
+		if (!string.IsNullOrEmpty(weaponName))
+		{
+			if (!player.HasItem(weaponName))
+			{
+				Console.WriteLine("You don't have that!");
+				return;
+			}
+
+			if (weaponName == "sword")
+			{
+				damage = 25;
+			}
+			else if (weaponName == "axe")
+			{
+				damage = 35;
+			}
+			else
+			{
+				Console.WriteLine($"You can't use {weaponName} as a weapon! Using fists instead.");
+				damage = 5;
+			}
+		}
 		// string description = command.SecondWord;
 		Room currentRoom = player.CurrentRoom;
 		if (currentRoom.CurrentGuard == null)
@@ -250,7 +284,8 @@ class Game
 			Console.WriteLine("There is no Guard here.");
 			return;
 		}
-		player.Attack(20);
+
+		player.Attack(damage);
 	}
 	private void GoRoom(Command command)
 	{
@@ -306,8 +341,8 @@ class Game
 		}
 
 		player.CurrentRoom = nextRoom;
-		player.Damage(5);
-		Console.WriteLine("You tripped and lost  health");
+		player.Damage(3);
+		Console.WriteLine("You tripped and lost health");
 		Console.WriteLine("Your health: " + player.GetHealth());
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 

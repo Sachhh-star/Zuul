@@ -71,6 +71,11 @@ class Player
         return backpack.Show();
     }
 
+public bool HasItem(string itemName)
+    {
+        return backpack.HasItem(itemName);
+    }
+
     //use method 
 
     public string Use(string itemName)
@@ -145,11 +150,6 @@ class Player
         enemy.TakeDamage(damage);
         Console.WriteLine($"You hit the guard for {damage} damage!");
         Console.WriteLine($"Guard HP: {enemy.HP}");
-        // if (!CurrentRoom.HasAliveGuard())
-        // {
-        //     this.Damage(10);
-        //     Console.WriteLine("The guard hits you back");
-        // }
         if (CurrentRoom.HasAliveGuard())
         {
             // CurrentRoom.CurrentGuard.TakeDamage(damage); 

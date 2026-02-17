@@ -20,7 +20,7 @@ class Inventory
             return false;
         }
         // this is when you get the item for your inventory??? 
-        items.Add(itemName,item);
+        items.Add(itemName, item);
         return true;
     }
     public Item Get(string itemName)
@@ -33,6 +33,11 @@ class Inventory
             return foundItem;
         }
         return null; //it will tell that you dont have it 
+    }
+
+    public bool HasItem(string itemName)
+    {
+        return items.ContainsKey(itemName);
     }
     //  help methods
     public int TotalWeight()
