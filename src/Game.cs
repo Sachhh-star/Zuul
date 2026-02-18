@@ -99,6 +99,15 @@ class Game
 				Console.WriteLine("Try again!");
 				return;
 			}
+			if (player.CurrentRoom.GetShortDescription() == "outside the main entrance of the university")
+			{
+				Console.WriteLine("Congratulation! YOu have escaped the boring university!");
+				Console.WriteLine("You WIN!!");
+
+				//game is stop!
+				finished = true;
+				return;
+			}
 			Command command = parser.GetCommand();
 			finished = ProcessCommand(command);
 		}
@@ -238,13 +247,13 @@ class Game
 			Console.WriteLine("Attack who?");
 			return;
 		}
-		if (command.SecondWord.ToLower() != "guard" && command.SecondWord.ToLower() != "gaurd")
+		if (command.SecondWord.ToLower() != "guard")
 		{
 			Console.WriteLine("You need to attack the guard!");
 			return;
 		}
 
-		
+
 		int damage = 15; // Default damage (unarmed)
 		string weaponName = "";
 
@@ -253,7 +262,7 @@ class Game
 		{
 			weaponName = command.ThirdWord.ToLower();
 		}
-		
+
 		// If a weapon was specified, check if player has it and set damage
 		if (!string.IsNullOrEmpty(weaponName))
 		{
@@ -346,14 +355,7 @@ class Game
 		Console.WriteLine("Your health: " + player.GetHealth());
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 
-		if (player.CurrentRoom.GetShortDescription() == "outside the main entrance of the university")
-		{
-			Console.WriteLine("Congratulation! YOu have escaped the boring university!");
-			Console.WriteLine("You WIN!!");
 
-			//game is stop!
-			Environment.Exit(0);
-		}
 
 		// if (player.IsAlive()== false)
 		// {

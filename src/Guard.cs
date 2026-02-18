@@ -11,7 +11,7 @@ class Guard
     }
     public void TakeDamage(int amount)
     {
-        HP -= amount;
+       HP= Math.Max( HP -= amount,0);
     }
     public bool IsAlive()
     {
