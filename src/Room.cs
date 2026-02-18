@@ -31,7 +31,7 @@ class Room
 	{
 		return RoomISLock;
 	}
-	public void SetLock(string keyName)
+	public void SetLock()
 	{
 		RoomISLock = true;
 	}

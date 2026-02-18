@@ -32,9 +32,9 @@ class Game
 		Room hallways = new Room("in the hallways");
 
 		// Initialise room exits
-		outside.AddExit("east", theatre);
-		outside.AddExit("south", lab);
-		outside.AddExit("west", pub);
+		// outside.AddExit("east", theatre);
+		// outside.AddExit("south", lab);
+		// outside.AddExit("west", pub);
 
 		theatre.AddExit("west", pub);
 
@@ -75,9 +75,9 @@ class Game
 		hallways.CurrentGuard = new Guard(100);
 		pub.CurrentGuard = new Guard(100);
 		// add lock room
-		lab.SetLock("key");
-		pub.SetLock("key");
-		theatre.SetLock("key");
+		lab.SetLock();
+		// pub.SetLock("key");
+		// theatre.SetLock("key");
 
 		// Start game outside
 		// currentRoom = outside;
@@ -209,26 +209,98 @@ class Game
 		string itemName = command.SecondWord;
 		player.DropFromChest(itemName);
 	}
+	private void Use(Command command)
+    {
+        if (!command.HasSecondWord())
+        {
+            Console.WriteLine("What do you want to use?");
+            return;
+        }
+        string itemName = command.SecondWord;
+        string direction = command.ThirdWord;
+        if (itemName == "key")
+        {
+            if (string.IsNullOrEmpty(direction))
+            {
+                Console.WriteLine("Which door do you want to unlock? (e.g., 'use key east')");
+                return;
+            }
+
+            Room targetRoom = player.CurrentRoom.GetExit(direction);
+            if (targetRoom == null)
+            {
+                Console.WriteLine("There is no door in that direction!");
+            }
+            else
+            {
+                targetRoom.Unlock(itemName);
+                Console.WriteLine($"Click! You unlocked the door to the {direction}.");
+            }
+            }
+        else
+            {
+                Console.WriteLine(player.Use(itemName));
+            }
+    }
 
 	//Use 
-	private void Use(Command command)
-	{
+	// private void Use(Command command)
+	// {
 
-		if (!command.HasSecondWord())
-		{
-			Console.WriteLine("Use what?!");
-			return;
-		}
+	// 	if (!command.HasSecondWord())
+	// 	{
+	// 		Console.WriteLine("Use what?!");
+	// 		return;
+	// 	}
 
 
 
-		string itemName = command.SecondWord;
-		// string direction = command.ThridWord;
+	// 	string itemName = command.SecondWord;
+	// 	string direction = command.ThirdWord;
 
-		Console.WriteLine(player.Use(itemName));
-		player.Use(itemName);
+	// 	// use the key 
+	// 	if (itemName == "key")
+	// 	{
 
-	}
+	// 		if (string.IsNullOrEmpty(direction))
+	// 		{
+	// 			Console.WriteLine("Which door do you want to unlock? (e.g. 'use key east')");
+	// 		}
+	// 		return;
+	// 	}
+	// 	Room targetRoom = player.CurrentRoom.GetExit(direction);
+	// 	if (targetRoom == null)
+	// 	{
+	// 		Console.WriteLine("There is no door in that direction");
+	// 	}
+	// 	else
+	// 	{
+	// 		if (!string.IsNullOrEmpty(itemName))
+	// 		{
+	// 			targetRoom.Unlock(itemName);
+	// 			Console.WriteLine($"Click! you unlock the door to the {direction}.");
+	// 		}
+
+	// 	}
+	// 	// try to go to the next room.
+	// 	Room nextRoom = player.CurrentRoom.GetExit(direction);
+	// 	if (nextRoom == null)
+	// 	{
+	// 		Console.WriteLine("There is no door to " + direction + "!");
+	// 		return;
+	// 	}
+	// 	if (nextRoom.IsLock())
+	// 	{
+	// 		Console.WriteLine("The door is locked! You need to use the key!");
+	// 		return;
+	// 	}
+
+	// 	// string direction = command.ThridWord;
+
+	// 	Console.WriteLine(player.Use(itemName));
+	// 	player.Use(itemName);
+
+	// }
 
 	private void PrintLook()
 	{
@@ -311,31 +383,7 @@ class Game
 		}
 
 		string direction = command.SecondWord;
-		string itemName = command.ThirdWord;
 
-		// use the key 
-		if (itemName == "key")
-		{
-			if (string.IsNullOrEmpty(direction))
-			{
-				Console.WriteLine("Which door do you want to unlock? (e.g. 'use key east')");
-			}
-			return;
-		}
-		Room targetRoom = player.CurrentRoom.GetExit(direction);
-		if (targetRoom == null)
-		{
-			Console.WriteLine("There is no door in that direction");
-		}
-		else
-		{
-			if (!string.IsNullOrEmpty(itemName))
-			{
-				targetRoom.Unlock(itemName);
-				Console.WriteLine($"Click! you unlock the door to the {direction}.");
-			}
-
-		}
 		// try to go to the next room.
 		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)

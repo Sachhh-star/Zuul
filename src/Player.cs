@@ -103,24 +103,25 @@ public bool HasItem(string itemName)
                 backpack.Put(itemName, item);
                 break;
             case "key":
-                bool UnlockSomething = false;
-                foreach (Room neighbor in CurrentRoom.GetExits().Values)
-                {
-                    if (neighbor.IsLock())
-                    {
-                        neighbor.Unlock("key");
-                        UnlockSomething = true;
-                    }
-                }
-                if (UnlockSomething)
-                {
-                    massages = "You have unlock the door!";
-                }
-                else
-                {
-                    massages = "You need to use key to unlock the door!";
+                massages ="You unlocked the door! ";
+                // bool UnlockSomething = false;
+                // foreach (Room neighbor in CurrentRoom.GetExits().Values)
+                // {
+                //     if (neighbor.IsLock())
+                //     {
+                //         neighbor.Unlock("key");
+                //         UnlockSomething = true;
+                //     }
+                // }
+                // if (UnlockSomething)
+                // {
+                //     massages = "You have unlock the door!";
+                // }
+                // else
+                // {
+                //     massages = "You need to use key to unlock the door!";
 
-                }
+                // }
                 backpack.Put(itemName, item);
                 break;
 
