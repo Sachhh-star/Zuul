@@ -55,7 +55,7 @@ class Room
 		exits.Add(direction, neighbor);
 	}
 
-	// Return the description of the room.
+	// return the description of the room.
 	public string GetShortDescription()
 	{
 		return description;

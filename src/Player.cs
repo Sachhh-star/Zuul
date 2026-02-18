@@ -94,12 +94,12 @@ public bool HasItem(string itemName)
                 massages = "You have drink the potion! And your heal is now " + health;
                 break;
             case "sword":
-                Attack(20);
+                Attack(25);
                 massages = "You have attack the guard! he health is: ";
                 backpack.Put(itemName, item);
                 break;
             case "axe":
-                Attack(25);
+                Attack(35);
                 backpack.Put(itemName, item);
                 break;
             case "key":
@@ -129,13 +129,6 @@ public bool HasItem(string itemName)
                 backpack.Put(itemName, item);
                 break;
         }
-
-        // if (itemName == "potion")
-        // {
-        //     Health(20); // it give you 20 heal
-        //     backpack.Get(itemName); // this means that when you use the item it will remove permenently
-        //     return "You has use potion";
-        // }
         return massages;
 
     }

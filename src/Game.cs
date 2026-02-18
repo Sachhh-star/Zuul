@@ -60,8 +60,8 @@ class Game
 		// And add them to the Rooms
 		kitchen.Chest.Put("potion", potion);
 		kitchen.Chest.Put("sword", sword);
-		kitchen.Chest.Put("bag", bag);
-		lab.Chest.Put("key", key);
+		kitchen.Chest.Put("potion", potion);
+		classroom.Chest.Put("key", key);
 		lab.Chest.Put("potion", potion);
 
 		classroom.Chest.Put("potion", potion);
@@ -218,7 +218,7 @@ class Game
 
 		Console.WriteLine(player.Use(itemName));
 		player.Use(itemName);
-		// this is not done!!!!
+
 	}
 
 	private void PrintLook()
@@ -251,7 +251,7 @@ class Game
 		// Check for "attack guard [weapon]" (Parser strips "with")
 		if (command.HasThridWord())
 		{
-			weaponName = command.ThridWord.ToLower();
+			weaponName = command.ThirdWord.ToLower();
 		}
 		
 		// If a weapon was specified, check if player has it and set damage
@@ -273,7 +273,7 @@ class Game
 			}
 			else
 			{
-				Console.WriteLine($"You can't use {weaponName} as a weapon! Using fists instead.");
+				Console.WriteLine($"You can't use {weaponName} as a weapon! you using fists instead.");
 				damage = 5;
 			}
 		}
@@ -302,7 +302,7 @@ class Game
 		}
 
 		string direction = command.SecondWord;
-		string itemName = command.ThridWord;
+		string itemName = command.ThirdWord;
 
 		// use the key 
 		if (itemName == "key")
@@ -327,7 +327,7 @@ class Game
 			}
 
 		}
-		// Try to go to the next room.
+		// try to go to the next room.
 		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
