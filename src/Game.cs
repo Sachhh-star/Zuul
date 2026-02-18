@@ -222,7 +222,7 @@ class Game
         {
             if (string.IsNullOrEmpty(direction))
             {
-                Console.WriteLine("Which door do you want to unlock? (e.g., 'use key east')");
+                Console.WriteLine("Which door do you want to unlock? (e.g.'use key 'direction'')");
                 return;
             }
 
