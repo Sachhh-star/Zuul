@@ -10,6 +10,7 @@ class Room
 	private bool RoomISLock;
 
 	public Guard CurrentGuard {get; set;}
+	public Question RoomQuestion {get; set;}
 	// property
 	public Inventory Chest
 	{

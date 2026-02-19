@@ -52,7 +52,6 @@ class Game
 
 		// Create your Items here
 		Item potion = new Item(5, "healing potion");
-		Item bag = new Item(1, "a black bag");
 		Item sword = new Item(1, "a sword");
 		Item key = new Item(1, "a rusty key!");
 		Item axe = new Item(1, "a Axe");
@@ -76,8 +75,10 @@ class Game
 		pub.CurrentGuard = new Guard(100);
 		// add lock room
 		lab.SetLock();
-		// pub.SetLock("key");
-		// theatre.SetLock("key");
+		// add a question
+		hallways.RoomQuestion = new Question("What is 5 + 5?", "10");
+		kitchen.RoomQuestion = new Question("What color is the sky?", "blue");
+		office.RoomQuestion = new Question("What is 10 + 10?", "20");
 
 		// Start game outside
 		// currentRoom = outside;
@@ -210,38 +211,38 @@ class Game
 		player.DropFromChest(itemName);
 	}
 	private void Use(Command command)
-    {
-        if (!command.HasSecondWord())
-        {
-            Console.WriteLine("What do you want to use?");
-            return;
-        }
-        string itemName = command.SecondWord;
-        string direction = command.ThirdWord;
-        if (itemName == "key")
-        {
-            if (string.IsNullOrEmpty(direction))
-            {
-                Console.WriteLine("Which door do you want to unlock? (e.g.'use key 'direction'')");
-                return;
-            }
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("What do you want to use?");
+			return;
+		}
+		string itemName = command.SecondWord;
+		string direction = command.ThirdWord;
+		if (itemName == "key")
+		{
+			if (string.IsNullOrEmpty(direction))
+			{
+				Console.WriteLine("Which door do you want to unlock? (e.g.'use key 'direction'')");
+				return;
+			}
 
-            Room targetRoom = player.CurrentRoom.GetExit(direction);
-            if (targetRoom == null)
-            {
-                Console.WriteLine("There is no door in that direction!");
-            }
-            else
-            {
-                targetRoom.Unlock(itemName);
-                Console.WriteLine($"Click! You unlocked the door to the {direction}.");
-            }
-            }
-        else
-            {
-                Console.WriteLine(player.Use(itemName));
-            }
-    }
+			Room targetRoom = player.CurrentRoom.GetExit(direction);
+			if (targetRoom == null)
+			{
+				Console.WriteLine("There is no door in that direction!");
+			}
+			else
+			{
+				targetRoom.Unlock(itemName);
+				Console.WriteLine($"Click! You unlocked the door to the {direction}.");
+			}
+		}
+		else
+		{
+			Console.WriteLine(player.Use(itemName));
+		}
+	}
 
 	//Use 
 	// private void Use(Command command)
@@ -329,7 +330,7 @@ class Game
 		int damage = 15; // Default damage (unarmed)
 		string weaponName = "";
 
-		// Check for "attack guard [weapon]" (Parser strips "with")
+		// Check for "attack guard weapon
 		if (command.HasThridWord())
 		{
 			weaponName = command.ThirdWord.ToLower();
@@ -368,46 +369,62 @@ class Game
 
 		player.Attack(damage);
 	}
-	private void GoRoom(Command command)
-	{
-		if (!command.HasSecondWord())
-		{
-			// if there is no second word, we don't know where to go...
-			Console.WriteLine("Go where?");
-			return;
-		}
-		if (player.CurrentRoom.CurrentGuard != null && player.CurrentRoom.CurrentGuard.IsAlive())
-		{
-			Console.WriteLine("A guard blocks your path! You must defeat him first");
-			return;
-		}
+private void GoRoom(Command command)
+{
+    if (!command.HasSecondWord())
+    {
+        Console.WriteLine("Go where?");
+        return;
+    }
 
-		string direction = command.SecondWord;
+    string direction = command.SecondWord;
+    Room nextRoom = player.CurrentRoom.GetExit(direction);
 
-		// try to go to the next room.
-		Room nextRoom = player.CurrentRoom.GetExit(direction);
-		if (nextRoom == null)
-		{
-			Console.WriteLine("There is no door to " + direction + "!");
-			return;
-		}
-		if (nextRoom.IsLock())
-		{
-			Console.WriteLine("The door is locked! You need to use the key!");
-			return;
-		}
+    
+    if (nextRoom == null)
+    {
+        Console.WriteLine("There is no door to " + direction + "!");
+        return;
+    }
 
-		player.CurrentRoom = nextRoom;
-		player.Damage(3);
-		Console.WriteLine("You tripped and lost health");
-		Console.WriteLine("Your health: " + player.GetHealth());
-		Console.WriteLine(player.CurrentRoom.GetLongDescription());
+    // guard
+    if (player.CurrentRoom.CurrentGuard != null && player.CurrentRoom.CurrentGuard.IsAlive())
+    {
+        Console.WriteLine("A guard blocks your path! You must defeat him first");
+        return;
+    }
 
+    // room is locked
+    if (nextRoom.IsLock())
+    {
+        Console.WriteLine("The door is locked! You need to use the key!");
+        return;
+    }
 
+    // only if they are the question
+    if (player.CurrentRoom.RoomQuestion != null)
+    {
+        bool isCorrect = player.CurrentRoom.RoomQuestion.askquestion();
+        if (isCorrect)
+        {
+            player.Health(20); // Matchen met je tekst "gain 20 HP"
+            Console.WriteLine("Correct! You gain 20 HP.");
+        }
+        else
+        {
+            player.Damage(15); 
+            Console.WriteLine("Wrong! You take 15 damage.");
+            Console.WriteLine("Your health: " + player.GetHealth());
+            return; 
+        }
+    }
 
-		// if (player.IsAlive()== false)
-		// {
-		// 	Console.WriteLine("You are died!");
-		// }
-	}
+    
+    player.CurrentRoom = nextRoom;
+    player.Damage(3); 
+    Console.WriteLine("You tripped and lost 3 health while walking.");
+    
+    Console.WriteLine("Your health: " + player.GetHealth());
+    Console.WriteLine(player.CurrentRoom.GetLongDescription());
+}
 }
